@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import foto from './assets/foto.jpg'
+import foto from './assets/fotocamisetamerida.jpeg'
 
 
 
@@ -11,7 +11,7 @@ const CV_DATA = {
   telefono: "+34 652425974",
   linkedin: "https://www.linkedin.com/in/-ivaanrubio/",
   github: "https://github.com/ivaanrubio47",
-  sobreMi: "Desarrollador junior apasionado por el desarrollo multiplataforma, con experiencia práctica en Flutter, React Native y Spring Boot. Busco seguir creciendo en entornos profesionales donde pueda aportar y aprender a partes iguales.",
+  sobreMi: "Desarrollador Junior recién salido del superior con ganas de participar en proyectos reales y comenzar mi carrera profesional",
 
   experiencia: [
     {
@@ -50,7 +50,13 @@ const CV_DATA = {
     },
     {
       nombre: "flash-entry-crypto-alert",
-      descripcion: "Programa de monitorización de criptomonedas",
+      descripcion: "Programa de monitorización de criptomonedas.",
+      tecnologias: ["React Native"],
+      destacado: false,
+    },
+    {
+      nombre: "networking",
+      descripcion: "Red social entre trabajadores para publicar eventos cercanos sobre tecnología.",
       tecnologias: ["Java"],
       destacado: false,
     },
@@ -58,10 +64,10 @@ const CV_DATA = {
 
   habilidades: {
     tecnicas: [
-      { nombre: "Spring Boot / Java", nivel: 70 },
+      { nombre: "Spring Boot / Java", nivel: 90 },
       { nombre: "Flutter / Dart", nivel: 65 },
-      { nombre: "React Native / JavaScript - TypeScript", nivel: 60 },
-      { nombre: "SQL / MySql", nivel: 65 },
+      { nombre: "React Native / JavaScript - TypeScript", nivel: 75 },
+      { nombre: "SQL / MySql", nivel: 80 },
     ],
     blandas: [
       "Trabajo en equipo",
@@ -72,15 +78,15 @@ const CV_DATA = {
 
   idiomas: [
     { idioma: "Español", nivel: "Nativo" },
-    { idioma: "Inglés", nivel: "B1" },
+    { idioma: "Inglés", nivel: "B1 (alto)" },
   ],
 
   intereses: [
     "Desarrollo open source",
     "Diseño UI/UX",
+    "Páginas web",
     "Videojuegos",
-    "Música",
-  ],
+    ],
 };
 
 const NAV_ITEMS = [
@@ -374,7 +380,7 @@ export default function Portfolio() {
                   width: "280px",
                   height: "280px",
                   objectFit: "cover",
-                  objectPosition: "center top",  // para que centre en la cara
+                  objectPosition: "center",  // para que centre en la cara
                   filter: "grayscale(100%)",     // queda muy Bauhaus en blanco y negro
                 }}
               />
