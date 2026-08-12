@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import foto from './assets/fotocamisetamerida.jpeg'
 
-
-
 const CV_DATA = {
   nombre: "Iván Rubio Murillo",
   titulo: "Técnico Superior en Desarrollo de Aplicaciones Multiplataforma",
@@ -86,20 +84,19 @@ const CV_DATA = {
     "Diseño UI/UX",
     "Páginas web",
     "Videojuegos",
-    ],
+  ],
 };
 
 const NAV_ITEMS = [
-  { id: "inicio", label: "Inicio" },
-  { id: "sobre-mi", label: "Sobre mí" },
-  { id: "experiencia", label: "Experiencia" },
-  { id: "proyectos", label: "Proyectos" },
-  { id: "habilidades", label: "Habilidades" },
-  { id: "educacion", label: "Educación" },
-  { id: "contacto", label: "Contacto" },
+  { id: "inicio",      label: "Inicio" },
+  { id: "sobre-mi",   label: "Sobre mí" },
+  { id: "experiencia",label: "Experiencia" },
+  { id: "proyectos",  label: "Proyectos" },
+  { id: "habilidades",label: "Habilidades" },
+  { id: "educacion",  label: "Educación" },
+  { id: "contacto",   label: "Contacto" },
 ];
 
-/* ─── SCROLL REVEAL ─── */
 function useReveal() {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -117,10 +114,10 @@ function useReveal() {
 function Reveal({ children, delay = 0, direction = "up" }) {
   const [ref, visible] = useReveal();
   const transforms = {
-    up: "translateY(40px)",
-    left: "translateX(-40px)",
+    up:    "translateY(40px)",
+    left:  "translateX(-40px)",
     right: "translateX(40px)",
-    none: "scale(0.96)",
+    none:  "scale(0.96)",
   };
   return (
     <div ref={ref} style={{
@@ -133,7 +130,6 @@ function Reveal({ children, delay = 0, direction = "up" }) {
   );
 }
 
-/* ─── SCROLL SPY ─── */
 function useScrollSpy(ids) {
   const [active, setActive] = useState(ids[0]);
   useEffect(() => {
@@ -147,7 +143,16 @@ function useScrollSpy(ids) {
   return active;
 }
 
-/* ─── SKILL BAR ─── */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+}
+
 function SkillBar({ nombre, nivel, delay, index }) {
   const [ref, visible] = useReveal();
   const isEven = index % 2 === 0;
@@ -169,24 +174,13 @@ function SkillBar({ nombre, nivel, delay, index }) {
   );
 }
 
-/* ─── GEOMETRIC DECORATION ─── */
 function Geo({ type, style = {} }) {
-  if (type === "circle") return (
-    <div style={{ borderRadius: "50%", border: "2px solid currentColor", ...style }} />
-  );
-  if (type === "square") return (
-    <div style={{ ...style }} />
-  );
-  if (type === "line") return (
-    <div style={{ height: "2px", background: "currentColor", ...style }} />
-  );
-  if (type === "dot") return (
-    <div style={{ borderRadius: "50%", background: "currentColor", ...style }} />
-  );
+  if (type === "circle") return <div style={{ borderRadius: "50%", border: "2px solid currentColor", ...style }} />;
+  if (type === "square") return <div style={{ ...style }} />;
+  if (type === "dot")    return <div style={{ borderRadius: "50%", background: "currentColor", ...style }} />;
   return null;
 }
 
-/* ─── TAG ─── */
 function Tag({ children, inverted = false }) {
   const [hover, setHover] = useState(false);
   return (
@@ -194,18 +188,13 @@ function Tag({ children, inverted = false }) {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        display: "inline-block",
-        padding: "4px 12px",
-        fontSize: "10px",
-        fontWeight: 700,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
+        display: "inline-block", padding: "4px 12px",
+        fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
         border: "1px solid",
         borderColor: inverted ? "#fff" : "#111",
         color: hover ? (inverted ? "#111" : "#fff") : (inverted ? "#fff" : "#111"),
         background: hover ? (inverted ? "#fff" : "#111") : "transparent",
-        transition: "background 0.2s, color 0.2s",
-        cursor: "default",
+        transition: "background 0.2s, color 0.2s", cursor: "default",
       }}
     >
       {children}
@@ -213,10 +202,11 @@ function Tag({ children, inverted = false }) {
   );
 }
 
-/* ─── MAIN ─── */
 export default function Portfolio() {
   const active = useScrollSpy(NAV_ITEMS.map(n => n.id));
   const [scrollY, setScrollY] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
@@ -224,10 +214,19 @@ export default function Portfolio() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = id => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  // Cierra el menú al hacer scroll
+  useEffect(() => {
+    if (menuOpen) setMenuOpen(false);
+  }, [scrollY]);
 
-  const nombre = CV_DATA.nombre.includes("[") ? "TU NOMBRE" : CV_DATA.nombre.toUpperCase();
+  const scrollTo = id => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setMenuOpen(false);
+  };
+
+  const nombre = "IVÁN RUBIO MURILLO";
   const nombrePartes = nombre.split(" ");
+  const pad = isMobile ? "0 1.25rem" : "0 3rem";
 
   return (
     <div style={{ background: "#F5F2ED", color: "#111", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", overflowX: "hidden" }}>
@@ -248,88 +247,118 @@ export default function Portfolio() {
       {/* ── NAV ── */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrollY > 40 ? "#111" : "transparent",
-        borderBottom: scrollY > 40 ? "none" : "none",
+        background: scrollY > 40 || menuOpen ? "#111" : "transparent",
         transition: "background 0.4s",
       }}>
         <div style={{
-          maxWidth: "1400px", margin: "0 auto", padding: "0 3rem",
+          maxWidth: "1400px", margin: "0 auto", padding: pad,
           height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
           <span onClick={() => scrollTo("inicio")} style={{
             fontFamily: "'Anton', sans-serif", fontSize: "1rem",
-            color: scrollY > 40 ? "#fff" : "#111", cursor: "pointer",
-            letterSpacing: "0.1em", transition: "color 0.4s",
+            color: scrollY > 40 || menuOpen ? "#fff" : "#111",
+            cursor: "pointer", letterSpacing: "0.1em", transition: "color 0.4s",
           }}>
-            {nombrePartes.slice(0, 2).join(" ")}
+            IVÁN RUBIO
           </span>
-          <div style={{ display: "flex", gap: "2rem" }}>
+
+          {/* Desktop nav */}
+          {!isMobile && (
+            <div style={{ display: "flex", gap: "2rem" }}>
+              {NAV_ITEMS.map(item => (
+                <button key={item.id} onClick={() => scrollTo(item.id)} style={{
+                  background: "none", border: "none", cursor: "pointer",
+                  fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+                  color: active === item.id ? "#E63312" : scrollY > 40 ? "#fff" : "#111",
+                  transition: "color 0.3s", padding: "4px 0",
+                  borderBottom: active === item.id ? "2px solid #E63312" : "2px solid transparent",
+                }}>
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Hamburger */}
+          {isMobile && (
+            <button onClick={() => setMenuOpen(!menuOpen)} style={{
+              background: "none", border: "none", cursor: "pointer",
+              display: "flex", flexDirection: "column", gap: "5px", padding: "4px",
+            }}>
+              {[0, 1, 2].map(i => (
+                <span key={i} style={{
+                  display: "block", width: "24px", height: "2px",
+                  background: scrollY > 40 || menuOpen ? "#fff" : "#111",
+                  transition: "transform 0.3s, opacity 0.3s",
+                  transform: menuOpen
+                    ? i === 0 ? "rotate(45deg) translate(5px, 5px)"
+                    : i === 2 ? "rotate(-45deg) translate(5px, -5px)"
+                    : "none"
+                    : "none",
+                  opacity: menuOpen && i === 1 ? 0 : 1,
+                }} />
+              ))}
+            </button>
+          )}
+        </div>
+
+        {/* Mobile menu desplegable */}
+        {isMobile && menuOpen && (
+          <div style={{
+            background: "#111", borderTop: "1px solid #222",
+            display: "flex", flexDirection: "column",
+          }}>
             {NAV_ITEMS.map(item => (
               <button key={item.id} onClick={() => scrollTo(item.id)} style={{
                 background: "none", border: "none", cursor: "pointer",
-                fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-                color: active === item.id
-                  ? "#E63312"
-                  : scrollY > 40 ? "#fff" : "#111",
-                transition: "color 0.3s",
-                padding: "4px 0",
-                borderBottom: active === item.id ? "2px solid #E63312" : "2px solid transparent",
+                padding: "1rem 1.25rem", textAlign: "left",
+                fontSize: "13px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+                color: active === item.id ? "#E63312" : "#fff",
+                borderBottom: "1px solid #222",
               }}>
                 {item.label}
               </button>
             ))}
           </div>
-        </div>
+        )}
       </nav>
 
       {/* ── HERO ── */}
-      <section id="inicio" style={{ minHeight: "100vh", background: "#111", color: "#F5F2ED", position: "relative", overflow: "hidden", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: "0 0 5rem" }}>
+      <section id="inicio" style={{
+        minHeight: "100vh", background: "#111", color: "#F5F2ED",
+        position: "relative", overflow: "hidden",
+        display: "flex", flexDirection: "column", justifyContent: "flex-end",
+        padding: "0 0 4rem",
+      }}>
+        {/* Decorativos — ocultos en móvil */}
+        {!isMobile && <>
+          <Geo type="circle" style={{ position: "absolute", top: "10%", right: "8%", width: "320px", height: "320px", color: "#E63312", opacity: 0.15 }} />
+          <Geo type="circle" style={{ position: "absolute", top: "12%", right: "9.5%", width: "260px", height: "260px", color: "#F5F2ED", opacity: 0.06 }} />
+          <Geo type="square" style={{ position: "absolute", bottom: "15%", right: "20%", width: "180px", height: "180px", background: "#E63312", opacity: 0.12 }} />
+          <Geo type="square" style={{ position: "absolute", top: "20%", left: "5%", width: "60px", height: "60px", background: "#E63312" }} />
+          <div style={{ position: "absolute", top: "8%", right: "6%", width: "140px", height: "140px", animation: "spin 18s linear infinite", opacity: 0.5 }}>
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div key={i} style={{ position: "absolute", top: "50%", left: "50%", width: "60px", height: "1px", background: "#E63312", transformOrigin: "0 0", transform: `rotate(${i * 30}deg)` }} />
+            ))}
+          </div>
+        </>}
 
-        {/* Geometric background elements */}
-        <Geo type="circle" style={{ position: "absolute", top: "10%", right: "8%", width: "320px", height: "320px", color: "#E63312", opacity: 0.15 }} />
-        <Geo type="circle" style={{ position: "absolute", top: "12%", right: "9.5%", width: "260px", height: "260px", color: "#F5F2ED", opacity: 0.06 }} />
-        <Geo type="square" style={{ position: "absolute", bottom: "15%", right: "20%", width: "180px", height: "180px", background: "#E63312", opacity: 0.12 }} />
-        <Geo type="square" style={{ position: "absolute", top: "20%", left: "5%", width: "60px", height: "60px", background: "#E63312" }} />
-
-        {/* Spinning circle top right */}
-        <div style={{
-          position: "absolute", top: "8%", right: "6%",
-          width: "140px", height: "140px",
-          animation: "spin 18s linear infinite",
-          opacity: 0.5,
-        }}>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} style={{
-              position: "absolute", top: "50%", left: "50%",
-              width: "60px", height: "1px",
-              background: "#E63312",
-              transformOrigin: "0 0",
-              transform: `rotate(${i * 30}deg)`,
-            }} />
-          ))}
-        </div>
-
-
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem", width: "100%", paddingTop: "120px" }}>
-          {/* Index label */}
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad, width: "100%", paddingTop: "100px" }}>
           <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.1s forwards" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "3rem" }}>
-              <Geo type="dot" style={{ width: "8px", height: "8px", color: "#E63312" }} />
-              <span style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", color: "#E63312" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "2rem" }}>
+              <Geo type="dot" style={{ width: "8px", height: "8px", color: "#E63312", flexShrink: 0 }} />
+              <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#E63312" }}>
                 Portfolio & CV — {new Date().getFullYear()}
               </span>
             </div>
           </div>
 
-          {/* Giant name */}
           <div style={{ opacity: 0, animation: "fadeUp 0.9s ease 0.2s forwards" }}>
             <h1 style={{
               fontFamily: "'Anton', sans-serif",
-              fontSize: "clamp(4rem, 12vw, 11rem)",
-              lineHeight: 0.9,
-              letterSpacing: "-0.02em",
-              color: "#F5F2ED",
-              marginBottom: "3rem",
+              fontSize: "clamp(3rem, 12vw, 11rem)",
+              lineHeight: 0.9, letterSpacing: "-0.02em",
+              color: "#F5F2ED", marginBottom: "2.5rem",
             }}>
               {nombrePartes.map((p, i) => (
                 <span key={i} style={{ display: "block", color: i === nombrePartes.length - 1 ? "#E63312" : "#F5F2ED" }}>
@@ -339,64 +368,69 @@ export default function Portfolio() {
             </h1>
           </div>
 
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "flex-end" }}>
+          {/* Foto + info en móvil: columna; en desktop: grid */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: isMobile ? "2rem" : "4rem",
+            alignItems: "flex-end",
+          }}>
             <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.4s forwards" }}>
-              <div style={{ width: "48px", height: "2px", background: "#E63312", marginBottom: "1.5rem" }} />
-              <p style={{ fontSize: "1.1rem", color: "#F5F2ED", fontWeight: 300, lineHeight: 1.6, letterSpacing: "0.01em" }}>
+              <div style={{ width: "48px", height: "2px", background: "#E63312", marginBottom: "1.25rem" }} />
+              <p style={{ fontSize: isMobile ? "0.95rem" : "1.1rem", color: "#F5F2ED", fontWeight: 300, lineHeight: 1.6 }}>
                 {CV_DATA.titulo}
               </p>
-              <p style={{ fontSize: "12px", color: "#ffffff66", marginTop: "0.75rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              <p style={{ fontSize: "12px", color: "#ffffff66", marginTop: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
                 {CV_DATA.ubicacion}
               </p>
-            </div>
-            <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.55s forwards", display: "flex", justifyContent: "flex-end", gap: "16px" }}>
-              <button onClick={() => scrollTo("proyectos")} style={{
-                background: "#E63312", color: "#fff", border: "none",
-                padding: "14px 32px", fontSize: "11px", fontWeight: 700,
-                letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
-                transition: "background 0.2s, transform 0.2s",
-              }}
-                onMouseEnter={e => { e.target.style.background = "#c4280e"; e.target.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.target.style.background = "#E63312"; e.target.style.transform = "none"; }}
-              >
-                Ver proyectos
-              </button>
-              <button onClick={() => scrollTo("contacto")} style={{
-                background: "transparent", color: "#F5F2ED", border: "1px solid #F5F2ED44",
-                padding: "14px 32px", fontSize: "11px", fontWeight: 700,
-                letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
-                transition: "border-color 0.2s, transform 0.2s",
-              }}
-                onMouseEnter={e => { e.target.style.borderColor = "#F5F2ED"; e.target.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.target.style.borderColor = "#F5F2ED44"; e.target.style.transform = "none"; }}
-              >
-                Contactar
-              </button>
-              <img
-                src={foto}
-                alt="Iván Rubio"
-                style={{
-                  width: "280px",
-                  height: "280px",
-                  objectFit: "cover",
-                  objectPosition: "center",  // para que centre en la cara
-                  filter: "grayscale(100%)",     // queda muy Bauhaus en blanco y negro
+              <div style={{ display: "flex", gap: "12px", marginTop: "1.75rem", flexWrap: "wrap" }}>
+                <button onClick={() => scrollTo("proyectos")} style={{
+                  background: "#E63312", color: "#fff", border: "none",
+                  padding: "12px 24px", fontSize: "11px", fontWeight: 700,
+                  letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
+                  transition: "background 0.2s",
                 }}
-              />
+                  onMouseEnter={e => e.target.style.background = "#c4280e"}
+                  onMouseLeave={e => e.target.style.background = "#E63312"}
+                >
+                  Ver proyectos
+                </button>
+                <button onClick={() => scrollTo("contacto")} style={{
+                  background: "transparent", color: "#F5F2ED", border: "1px solid #F5F2ED44",
+                  padding: "12px 24px", fontSize: "11px", fontWeight: 700,
+                  letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
+                  transition: "border-color 0.2s",
+                }}
+                  onMouseEnter={e => e.target.style.borderColor = "#F5F2ED"}
+                  onMouseLeave={e => e.target.style.borderColor = "#F5F2ED44"}
+                >
+                  Contactar
+                </button>
+              </div>
+            </div>
+
+            <div style={{
+              opacity: 0, animation: "fadeUp 0.7s ease 0.55s forwards",
+              display: "flex", justifyContent: isMobile ? "center" : "flex-end",
+            }}>
+              <img src={foto} alt="Iván Rubio" style={{
+                width: isMobile ? "200px" : "280px",
+                height: isMobile ? "200px" : "280px",
+                objectFit: "cover", objectPosition: "center",
+                filter: "grayscale(100%)",
+              }} />
             </div>
           </div>
         </div>
 
-        {/* Bottom rule */}
         <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "1px", background: "#ffffff11" }} />
       </section>
 
       {/* ── MARQUEE ── */}
-      <div style={{ background: "#E63312", overflow: "hidden", padding: "14px 0", borderTop: "none" }}>
+      <div style={{ background: "#E63312", overflow: "hidden", padding: "12px 0" }}>
         <div style={{ display: "flex", animation: "marquee 18s linear infinite", whiteSpace: "nowrap" }}>
           {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i} style={{ fontFamily: "'Anton', sans-serif", fontSize: "0.85rem", color: "#fff", letterSpacing: "0.2em", marginRight: "4rem", textTransform: "uppercase" }}>
+            <span key={i} style={{ fontFamily: "'Anton', sans-serif", fontSize: "0.8rem", color: "#fff", letterSpacing: "0.2em", marginRight: "3rem", textTransform: "uppercase" }}>
               {CV_DATA.titulo} ◆ {CV_DATA.ubicacion} ◆ Disponible ◆
             </span>
           ))}
@@ -404,10 +438,15 @@ export default function Portfolio() {
       </div>
 
       {/* ── SOBRE MÍ ── */}
-      <section id="sobre-mi" style={{ padding: "7rem 0", background: "#F5F2ED" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "6rem", alignItems: "start" }}>
-            <Reveal direction="left">
+      <section id="sobre-mi" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#F5F2ED" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 2fr",
+            gap: isMobile ? "3rem" : "6rem",
+            alignItems: "start",
+          }}>
+            <Reveal direction={isMobile ? "up" : "left"}>
               <div>
                 <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: "#E63312", marginBottom: "1rem" }}>02 — Sobre mí</p>
                 <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1, letterSpacing: "-0.01em", marginBottom: "2rem" }}>
@@ -425,13 +464,13 @@ export default function Portfolio() {
               </div>
             </Reveal>
             <div>
-              <Reveal direction="right">
-                <p style={{ fontSize: "1.15rem", lineHeight: 1.9, color: "#333", fontWeight: 300, marginBottom: "3rem" }}>
+              <Reveal direction={isMobile ? "up" : "right"}>
+                <p style={{ fontSize: isMobile ? "1rem" : "1.15rem", lineHeight: 1.9, color: "#333", fontWeight: 300, marginBottom: "2.5rem" }}>
                   {CV_DATA.sobreMi}
                 </p>
               </Reveal>
               <Reveal direction="up" delay={0.15}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0", borderTop: "1px solid #ddd" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "0", borderTop: "1px solid #ddd" }}>
                   {[
                     { label: "Email", value: CV_DATA.email, href: `mailto:${CV_DATA.email}` },
                     { label: "Teléfono", value: CV_DATA.telefono, href: `tel:${CV_DATA.telefono}` },
@@ -446,7 +485,7 @@ export default function Portfolio() {
                       onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; }}
                     >
                       <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#999", marginBottom: "4px" }}>{label}</p>
-                      <p style={{ fontSize: "13px", fontWeight: 700, color: "#111" }}>{value}</p>
+                      <p style={{ fontSize: "13px", fontWeight: 700, color: "#111", wordBreak: "break-all" }}>{value}</p>
                     </a>
                   ))}
                 </div>
@@ -457,10 +496,10 @@ export default function Portfolio() {
       </section>
 
       {/* ── EXPERIENCIA ── */}
-      <section id="experiencia" style={{ padding: "7rem 0", background: "#111", color: "#F5F2ED" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem" }}>
+      <section id="experiencia" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#111", color: "#F5F2ED" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "2rem", marginBottom: "5rem", borderBottom: "1px solid #333", paddingBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #333", paddingBottom: "2rem", flexWrap: "wrap" }}>
               <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase" }}>03 — Experiencia</p>
               <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>TRAYECTORIA</h2>
             </div>
@@ -468,9 +507,10 @@ export default function Portfolio() {
           {CV_DATA.experiencia.map((exp, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div style={{
-                display: "grid", gridTemplateColumns: "60px 180px 1fr",
-                gap: "2rem", padding: "2.5rem 0", borderBottom: "1px solid #222",
-                alignItems: "start",
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "60px 180px 1fr",
+                gap: isMobile ? "0.75rem" : "2rem",
+                padding: "2rem 0", borderBottom: "1px solid #222",
               }}>
                 <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.5rem", color: "#E63312", lineHeight: 1 }}>
                   {String(i + 1).padStart(2, "0")}
@@ -482,7 +522,7 @@ export default function Portfolio() {
                   <p style={{ fontSize: "13px", fontWeight: 700, color: "#E63312", letterSpacing: "0.04em" }}>{exp.empresa}</p>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "0.02em" }}>{exp.puesto}</h3>
+                  <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "0.02em" }}>{exp.puesto}</h3>
                   <p style={{ fontSize: "14px", color: "#888", lineHeight: 1.8, marginBottom: "1.25rem", fontWeight: 300 }}>{exp.descripcion}</p>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
                     {exp.tecnologias.map(t => <Tag key={t} inverted>{t}</Tag>)}
@@ -495,35 +535,37 @@ export default function Portfolio() {
       </section>
 
       {/* ── PROYECTOS ── */}
-      <section id="proyectos" style={{ padding: "7rem 0", background: "#F5F2ED" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem" }}>
+      <section id="proyectos" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#F5F2ED" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "2rem", marginBottom: "5rem", borderBottom: "1px solid #ddd", paddingBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #ddd", paddingBottom: "2rem", flexWrap: "wrap" }}>
               <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase" }}>04 — Proyectos</p>
               <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>TRABAJO</h2>
             </div>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0" }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+            gap: isMobile ? "1rem" : "0",
+          }}>
             {CV_DATA.proyectos.map((p, i) => {
               const isFirst = i === 0;
               return (
                 <Reveal key={i} delay={i * 0.1} direction="up">
                   <div style={{
-                    padding: "2.5rem",
+                    padding: "2rem",
                     background: isFirst ? "#111" : "#F5F2ED",
                     color: isFirst ? "#F5F2ED" : "#111",
-                    border: "1px solid",
-                    borderColor: isFirst ? "#111" : "#ddd",
-                    minHeight: "320px",
+                    border: "1px solid", borderColor: isFirst ? "#111" : "#ddd",
+                    minHeight: isMobile ? "auto" : "320px",
                     display: "flex", flexDirection: "column",
                     transition: "transform 0.25s",
-                    cursor: "default",
                   }}
                     onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px)"; }}
                     onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem" }}>
-                      <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "3rem", color: "#E63312", lineHeight: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
+                      <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "2.5rem", color: "#E63312", lineHeight: 1 }}>
                         {String(i + 1).padStart(2, "0")}
                       </span>
                       {p.destacado && (
@@ -532,19 +574,11 @@ export default function Portfolio() {
                         </span>
                       )}
                     </div>
-                    <h3 style={{ fontSize: "1.15rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "0.02em", flex: 1 }}>{p.nombre}</h3>
-                    <p style={{ fontSize: "13px", lineHeight: 1.75, color: isFirst ? "#aaa" : "#555", marginBottom: "1.5rem", fontWeight: 300 }}>{p.descripcion}</p>
-                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginBottom: p.enlace && !p.enlace.includes("[") ? "1rem" : "0" }}>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem", flex: 1 }}>{p.nombre}</h3>
+                    <p style={{ fontSize: "13px", lineHeight: 1.75, color: isFirst ? "#aaa" : "#555", marginBottom: "1.25rem", fontWeight: 300 }}>{p.descripcion}</p>
+                    <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                       {p.tecnologias.map(t => <Tag key={t} inverted={isFirst}>{t}</Tag>)}
                     </div>
-                    {p.enlace && !p.enlace.includes("[") && (
-                      <a href={p.enlace} target="_blank" rel="noreferrer" style={{
-                        fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-                        color: "#E63312", display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "0.75rem",
-                      }}>
-                        Ver proyecto →
-                      </a>
-                    )}
                   </div>
                 </Reveal>
               );
@@ -554,20 +588,22 @@ export default function Portfolio() {
       </section>
 
       {/* ── HABILIDADES ── */}
-      <section id="habilidades" style={{ padding: "7rem 0", background: "#E63312", color: "#fff" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem" }}>
+      <section id="habilidades" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#E63312", color: "#fff" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "2rem", marginBottom: "5rem", borderBottom: "1px solid #ffffff33", paddingBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #ffffff33", paddingBottom: "2rem", flexWrap: "wrap" }}>
               <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#ffffff99", textTransform: "uppercase" }}>05 — Habilidades</p>
               <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>SKILLS</h2>
             </div>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem" }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: isMobile ? "3rem" : "6rem",
+          }}>
             <div>
               <Reveal>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2rem", color: "#ffffff99" }}>
-                  Técnicas
-                </p>
+                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2rem", color: "#ffffff99" }}>Técnicas</p>
               </Reveal>
               {CV_DATA.habilidades.tecnicas.map((h, i) => (
                 <SkillBar key={h.nombre} nombre={h.nombre} nivel={h.nivel} delay={i * 0.08} index={i} />
@@ -575,16 +611,10 @@ export default function Portfolio() {
             </div>
             <div>
               <Reveal delay={0.1}>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2rem", color: "#ffffff99" }}>
-                  Blandas
-                </p>
+                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2rem", color: "#ffffff99" }}>Blandas</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "0", marginBottom: "3rem" }}>
                   {CV_DATA.habilidades.blandas.map((h, i) => (
-                    <div key={i} style={{
-                      padding: "1rem 0", borderBottom: "1px solid #ffffff33",
-                      display: "flex", alignItems: "center", gap: "16px",
-                      fontSize: "14px", fontWeight: 400,
-                    }}>
+                    <div key={i} style={{ padding: "1rem 0", borderBottom: "1px solid #ffffff33", display: "flex", alignItems: "center", gap: "16px", fontSize: "14px", fontWeight: 400 }}>
                       <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.2rem", color: "#fff", opacity: 0.3 }}>{String(i + 1).padStart(2, "0")}</span>
                       {h}
                     </div>
@@ -592,16 +622,12 @@ export default function Portfolio() {
                 </div>
               </Reveal>
               <Reveal delay={0.2}>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "1.5rem", color: "#ffffff99" }}>
-                  Intereses
-                </p>
+                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "1.5rem", color: "#ffffff99" }}>Intereses</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {CV_DATA.intereses.map((int, i) => (
-                    <span key={i} style={{
-                      padding: "6px 16px", fontSize: "11px", fontWeight: 700,
-                      letterSpacing: "0.1em", textTransform: "uppercase",
-                      border: "1px solid #ffffff66", color: "#fff",
-                    }}>{int}</span>
+                    <span key={i} style={{ padding: "6px 16px", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", border: "1px solid #ffffff66", color: "#fff" }}>
+                      {int}
+                    </span>
                   ))}
                 </div>
               </Reveal>
@@ -611,10 +637,10 @@ export default function Portfolio() {
       </section>
 
       {/* ── EDUCACIÓN ── */}
-      <section id="educacion" style={{ padding: "7rem 0", background: "#F5F2ED" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem" }}>
+      <section id="educacion" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#F5F2ED" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "2rem", marginBottom: "5rem", borderBottom: "1px solid #ddd", paddingBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #ddd", paddingBottom: "2rem", flexWrap: "wrap" }}>
               <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase" }}>06 — Educación</p>
               <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>FORMACIÓN</h2>
             </div>
@@ -622,8 +648,10 @@ export default function Portfolio() {
           {CV_DATA.educacion.map((edu, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div style={{
-                display: "grid", gridTemplateColumns: "60px 180px 1fr",
-                gap: "2rem", padding: "2.5rem 0", borderBottom: "1px solid #ddd", alignItems: "start",
+                display: "grid",
+                gridTemplateColumns: isMobile ? "1fr" : "60px 180px 1fr",
+                gap: isMobile ? "0.75rem" : "2rem",
+                padding: "2rem 0", borderBottom: "1px solid #ddd",
               }}>
                 <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.5rem", color: "#E63312", lineHeight: 1 }}>
                   {String(i + 1).padStart(2, "0")}
@@ -632,8 +660,8 @@ export default function Portfolio() {
                   {edu.fechaInicio} — {edu.fechaFin}
                 </p>
                 <div>
-                  <h3 style={{ fontSize: "1.15rem", fontWeight: 700, marginBottom: "4px", letterSpacing: "0.02em" }}>{edu.titulo}</h3>
-                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#E63312", marginBottom: "0.5rem", letterSpacing: "0.04em" }}>{edu.centro}</p>
+                  <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "4px" }}>{edu.titulo}</h3>
+                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#E63312", marginBottom: "0.5rem" }}>{edu.centro}</p>
                   {edu.descripcion && (
                     <p style={{ fontSize: "13px", color: "#666", lineHeight: 1.8, fontWeight: 300 }}>{edu.descripcion}</p>
                   )}
@@ -645,39 +673,44 @@ export default function Portfolio() {
       </section>
 
       {/* ── CONTACTO ── */}
-      <section id="contacto" style={{ padding: "7rem 0", background: "#111", color: "#F5F2ED" }}>
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "0 3rem" }}>
+      <section id="contacto" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#111", color: "#F5F2ED" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
           <Reveal>
             <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase", marginBottom: "1rem" }}>07 — Contacto</p>
-            <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(3rem, 8vw, 8rem)", lineHeight: 0.9, letterSpacing: "-0.02em", marginBottom: "4rem" }}>
+            <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(3rem, 8vw, 8rem)", lineHeight: 0.9, letterSpacing: "-0.02em", marginBottom: "3rem" }}>
               HABLEMOS<span style={{ color: "#E63312" }}>.</span>
             </h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "6rem" }}>
-            <Reveal direction="left">
-              <p style={{ fontSize: "1.1rem", color: "#888", lineHeight: 1.9, fontWeight: 300 }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+            gap: isMobile ? "2.5rem" : "6rem",
+          }}>
+            <Reveal direction={isMobile ? "up" : "left"}>
+              <p style={{ fontSize: "1rem", color: "#888", lineHeight: 1.9, fontWeight: 300 }}>
                 ¿Tienes una propuesta, proyecto o simplemente quieres hablar? Estoy abierto a nuevas oportunidades.
               </p>
             </Reveal>
-            <Reveal direction="right">
-              <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+            <Reveal direction={isMobile ? "up" : "right"}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
                 {[
                   { label: "Email", value: CV_DATA.email, href: `mailto:${CV_DATA.email}` },
                   { label: "Teléfono", value: CV_DATA.telefono, href: `tel:${CV_DATA.telefono}` },
-                  { label: "LinkedIn", value: "linkedin.com/in/...", href: CV_DATA.linkedin },
-                  { label: "GitHub", value: "github.com/...", href: CV_DATA.github },
+                  { label: "LinkedIn", value: "linkedin.com/in/-ivaanrubio", href: CV_DATA.linkedin },
+                  { label: "GitHub", value: "github.com/ivaanrubio47", href: CV_DATA.github },
                 ].map(({ label, value, href }) => (
                   <a key={label} href={href} target="_blank" rel="noreferrer" style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
                     padding: "1.25rem 0", borderBottom: "1px solid #222",
-                    textDecoration: "none", transition: "padding-left 0.25s, color 0.25s",
-                    color: "#F5F2ED",
+                    textDecoration: "none", color: "#F5F2ED",
+                    transition: "padding-left 0.25s, color 0.25s",
+                    gap: "1rem",
                   }}
                     onMouseEnter={e => { e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.color = "#E63312"; }}
                     onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.color = "#F5F2ED"; }}
                   >
-                    <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#555" }}>{label}</span>
-                    <span style={{ fontSize: "13px", fontWeight: 700 }}>{value} →</span>
+                    <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#555", flexShrink: 0 }}>{label}</span>
+                    <span style={{ fontSize: "12px", fontWeight: 700, wordBreak: "break-all", textAlign: "right" }}>{value} →</span>
                   </a>
                 ))}
               </div>
@@ -687,11 +720,15 @@ export default function Portfolio() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ background: "#E63312", padding: "1.5rem 3rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <footer style={{
+        background: "#E63312", padding: "1.25rem 1.5rem",
+        display: "flex", justifyContent: "space-between", alignItems: "center",
+        flexWrap: "wrap", gap: "0.5rem",
+      }}>
         <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "0.9rem", color: "#fff", letterSpacing: "0.1em" }}>
-          {CV_DATA.nombre.toUpperCase()}
+          IVÁN RUBIO MURILLO
         </span>
-        <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.15em", color: "#ffffff99", textTransform: "uppercase" }}>
+        <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", color: "#ffffff99", textTransform: "uppercase" }}>
           © {new Date().getFullYear()} — Todos los derechos reservados
         </span>
       </footer>
