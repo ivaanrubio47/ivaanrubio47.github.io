@@ -9,8 +9,7 @@ const CV_DATA = {
   telefono: "+34 652425974",
   linkedin: "https://www.linkedin.com/in/-ivaanrubio/",
   github: "https://github.com/ivaanrubio47",
-  sobreMi: "Desarrollador Junior recién salido del superior con ganas de participar en proyectos reales y comenzar mi carrera profesional",
-
+  sobreMi: "Desarrollador Junior apasionado por el desarrollo móvil y de software. Buscando integrarme en un equipo técnico experimentado donde aportar valor, mientras sigo aprendiendo y escalando mis conocimientos tecnológicos.",
   experiencia: [
     {
       empresa: "Veyve",
@@ -20,9 +19,22 @@ const CV_DATA = {
       descripcion: "Prácticas de empresa desarrollando una aplicación de Networking",
       tecnologias: ["JavaScript", "TypeScript", "React JS", "React Native"],
     },
+    {
+      empresa: "Barocco",
+      puesto: "Camarero",
+      fechaInicio: "Septiembre 2026",
+      descripcion: "Camarero nocturno en ambiente de discoteca, trabajando en equipo y bajo presión",
+      tecnologias: ["Trabajo en equipo", "Comunicación efectiva", "Gestión del tiempo"]
+    },
   ],
-
   educacion: [
+    {
+      centro: "IES Albarregas",
+      titulo: "Máster de Formación Profesional en Recursos y Servicios en la Nube (En curso)",
+      fechaInicio: "2026",
+      fechaFin: "2027",
+      descripcion: "Aprendizaje de competencias para desplegar, administrar y securizar infraestructuras en plataformas cloud (computación, bases de datos y redes).",
+    },
     {
       centro: "IES Albarregas",
       titulo: "Técnico Superior de DAM",
@@ -38,7 +50,6 @@ const CV_DATA = {
       descripcion: "Realización de estudios post-obligatorios",
     },
   ],
-
   proyectos: [
     {
       nombre: "Book&Cut",
@@ -55,46 +66,34 @@ const CV_DATA = {
     {
       nombre: "networking",
       descripcion: "Red social entre trabajadores para publicar eventos cercanos sobre tecnología.",
-      tecnologias: ["Java"],
+      tecnologias: ["React Native", "React JS", "TypeScript", "JavaScript"],
       destacado: false,
     },
   ],
-
   habilidades: {
     tecnicas: [
       { nombre: "Spring Boot / Java", nivel: 90 },
       { nombre: "Flutter / Dart", nivel: 65 },
-      { nombre: "React Native / JavaScript - TypeScript", nivel: 75 },
-      { nombre: "SQL / MySql", nivel: 80 },
+      { nombre: "React Native / JavaScript - TypeScript", nivel: 95 },
+      { nombre: "SQL / MySql", nivel: 90 },
     ],
-    blandas: [
-      "Trabajo en equipo",
-      "Comunicación efectiva",
-      "Aprendizaje continuo",
-    ],
+    blandas: ["Trabajo en equipo", "Comunicación efectiva", "Aprendizaje continuo"],
   },
-
   idiomas: [
     { idioma: "Español", nivel: "Nativo" },
-    { idioma: "Inglés", nivel: "B1 (alto)" },
+    { idioma: "Inglés", nivel: "B1 - Certified by University of Oxford" },
   ],
-
-  intereses: [
-    "Desarrollo open source",
-    "Diseño UI/UX",
-    "Páginas web",
-    "Videojuegos",
-  ],
+  intereses: ["Desarrollo open source", "Diseño UI/UX", "Páginas web", "Videojuegos"],
 };
 
 const NAV_ITEMS = [
-  { id: "inicio",      label: "Inicio" },
-  { id: "sobre-mi",   label: "Sobre mí" },
-  { id: "experiencia",label: "Experiencia" },
-  { id: "proyectos",  label: "Proyectos" },
-  { id: "habilidades",label: "Habilidades" },
-  { id: "educacion",  label: "Educación" },
-  { id: "contacto",   label: "Contacto" },
+  { id: "inicio",       label: "Inicio" },
+  { id: "sobre-mi",    label: "Sobre mí" },
+  { id: "experiencia", label: "Experiencia" },
+  { id: "proyectos",   label: "Proyectos" },
+  { id: "habilidades", label: "Habilidades" },
+  { id: "educacion",   label: "Educación" },
+  { id: "contacto",    label: "Contacto" },
 ];
 
 function useReveal() {
@@ -103,7 +102,7 @@ function useReveal() {
   useEffect(() => {
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.1 }
+      { threshold: 0.08 }
     );
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
@@ -113,16 +112,11 @@ function useReveal() {
 
 function Reveal({ children, delay = 0, direction = "up" }) {
   const [ref, visible] = useReveal();
-  const transforms = {
-    up:    "translateY(40px)",
-    left:  "translateX(-40px)",
-    right: "translateX(40px)",
-    none:  "scale(0.96)",
-  };
+  const transforms = { up: "translateY(40px)", left: "translateX(-40px)", right: "translateX(40px)" };
   return (
     <div ref={ref} style={{
       opacity: visible ? 1 : 0,
-      transform: visible ? "none" : transforms[direction],
+      transform: visible ? "none" : (transforms[direction] || "translateY(40px)"),
       transition: `opacity 0.75s ease ${delay}s, transform 0.75s ease ${delay}s`,
     }}>
       {children}
@@ -153,50 +147,40 @@ function useIsMobile() {
   return isMobile;
 }
 
-function SkillBar({ nombre, nivel, delay, index }) {
+function SkillBar({ nombre, nivel, delay }) {
   const [ref, visible] = useReveal();
-  const isEven = index % 2 === 0;
   return (
-    <div ref={ref} style={{ marginBottom: "1.5rem" }}>
+    <div ref={ref} style={{ marginBottom: "1.75rem" }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px", alignItems: "baseline" }}>
-        <span style={{ fontSize: "13px", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase" }}>{nombre}</span>
-        <span style={{ fontSize: "11px", fontWeight: 700, color: "#020202" }}>{nivel}</span>
+        <span style={{
+          fontFamily: "'Playfair Display', serif", fontStyle: "italic",
+          fontSize: "clamp(0.85rem, 1.8vw, 1.05rem)",
+          letterSpacing: "0.06em", textTransform: "uppercase", color: "#fff", fontWeight: 700,
+        }}>{nombre}</span>
+        <span style={{ fontFamily: "'Playfair Display', serif", fontStyle: "italic", fontSize: "0.85rem", color: "#555" }}>{nivel}%</span>
       </div>
-      <div style={{ height: "2px", background: "#ffffff", position: "relative" }}>
+      <div style={{ height: "1px", background: "#1a1a1a", position: "relative" }}>
         <div style={{
           position: "absolute", left: 0, top: 0, height: "100%",
           width: visible ? `${nivel}%` : "0%",
-          background: isEven ? "#111" : "#d7e60a",
-          transition: `width 1.1s cubic-bezier(0.25,1,0.5,1) ${delay}s`,
+          background: "#fff",
+          transition: `width 1.2s cubic-bezier(0.25,1,0.5,1) ${delay}s`,
         }} />
       </div>
     </div>
   );
 }
 
-function Geo({ type, style = {} }) {
-  if (type === "circle") return <div style={{ borderRadius: "50%", border: "2px solid currentColor", ...style }} />;
-  if (type === "square") return <div style={{ ...style }} />;
-  if (type === "dot")    return <div style={{ borderRadius: "50%", background: "currentColor", ...style }} />;
-  return null;
-}
-
 function Tag({ children, inverted = false }) {
-  const [hover, setHover] = useState(false);
   return (
-    <span
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-      style={{
-        display: "inline-block", padding: "4px 12px",
-        fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase",
-        border: "1px solid",
-        borderColor: inverted ? "#fff" : "#111",
-        color: hover ? (inverted ? "#111" : "#fff") : (inverted ? "#fff" : "#111"),
-        background: hover ? (inverted ? "#fff" : "#111") : "transparent",
-        transition: "background 0.2s, color 0.2s", cursor: "default",
-      }}
-    >
+    <span style={{
+      display: "inline-block", padding: "3px 12px",
+      fontSize: "9px", fontWeight: 700,
+      fontFamily: "'Playfair Display', serif", fontStyle: "italic",
+      letterSpacing: "0.1em", textTransform: "uppercase",
+      border: "1px solid", borderColor: "#1f1f1f",
+      color: "#555", background: "transparent",
+    }}>
       {children}
     </span>
   );
@@ -214,40 +198,38 @@ export default function Portfolio() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Cierra el menú al hacer scroll
-  useEffect(() => {
-    if (menuOpen) setMenuOpen(false);
-  }, [scrollY]);
+  useEffect(() => { if (menuOpen) setMenuOpen(false); }, [scrollY]);
 
   const scrollTo = id => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMenuOpen(false);
   };
 
-  const nombre = "IVÁN RUBIO MURILLO";
-  const nombrePartes = nombre.split(" ");
-  const pad = isMobile ? "0 1.25rem" : "0 3rem";
+  const pad = isMobile ? "0 1.25rem" : "0 4rem";
+  const secPad = isMobile ? "5rem 0" : "9rem 0";
+  const T = { fontFamily: "'Playfair Display', serif" };
 
   return (
-    <div style={{ background: "#F5F2ED", color: "#111", minHeight: "100vh", fontFamily: "'DM Sans', sans-serif", overflowX: "hidden" }}>
+    <div style={{ background: "#000", color: "#fff", minHeight: "100vh", ...T, overflowX: "hidden" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;700&family=Anton&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        ::selection { background: #E63312; color: #fff; }
+        ::selection { background: #fff; color: #000; }
         a { color: inherit; text-decoration: none; }
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: #F5F2ED; }
-        ::-webkit-scrollbar-thumb { background: #E63312; }
+        ::-webkit-scrollbar { width: 2px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #222; }
         @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:none} }
-        @keyframes spin { to{transform:rotate(360deg)} }
         @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
       `}</style>
 
-      {/* ── NAV ── */}
+      {/* NAV */}
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: scrollY > 40 || menuOpen ? "#111" : "transparent",
+        background: scrollY > 40 || menuOpen ? "#000" : "transparent",
+        borderBottom: scrollY > 40 ? "1px solid #7F011F" : "none",
         transition: "background 0.4s",
       }}>
         <div style={{
@@ -255,23 +237,23 @@ export default function Portfolio() {
           height: "64px", display: "flex", alignItems: "center", justifyContent: "space-between",
         }}>
           <span onClick={() => scrollTo("inicio")} style={{
-            fontFamily: "'Anton', sans-serif", fontSize: "1rem",
-            color: scrollY > 40 || menuOpen ? "#fff" : "#111",
-            cursor: "pointer", letterSpacing: "0.1em", transition: "color 0.4s",
+            ...T, fontWeight: 900, fontStyle: "italic",
+            fontSize: "1.05rem", letterSpacing: "0.05em", cursor: "pointer",
+            color: "#fff", textTransform: "uppercase",
           }}>
-            IVÁN RUBIO
+            Iván Rubio
           </span>
 
-          {/* Desktop nav */}
           {!isMobile && (
-            <div style={{ display: "flex", gap: "2rem" }}>
+            <div style={{ display: "flex", gap: "2.5rem" }}>
               {NAV_ITEMS.map(item => (
                 <button key={item.id} onClick={() => scrollTo(item.id)} style={{
                   background: "none", border: "none", cursor: "pointer",
-                  fontSize: "11px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-                  color: active === item.id ? "#E63312" : scrollY > 40 ? "#fff" : "#111",
-                  transition: "color 0.3s", padding: "4px 0",
-                  borderBottom: active === item.id ? "2px solid #E63312" : "2px solid transparent",
+                  ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  color: active === item.id ? "#fff" : "#7F011F",
+                  borderBottom: active === item.id ? "1px solid #fff" : "1px solid transparent",
+                  paddingBottom: "2px", transition: "color 0.3s",
                 }}>
                   {item.label}
                 </button>
@@ -279,22 +261,13 @@ export default function Portfolio() {
             </div>
           )}
 
-          {/* Hamburger */}
           {isMobile && (
-            <button onClick={() => setMenuOpen(!menuOpen)} style={{
-              background: "none", border: "none", cursor: "pointer",
-              display: "flex", flexDirection: "column", gap: "5px", padding: "4px",
-            }}>
+            <button onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: "5px" }}>
               {[0, 1, 2].map(i => (
                 <span key={i} style={{
-                  display: "block", width: "24px", height: "2px",
-                  background: scrollY > 40 || menuOpen ? "#fff" : "#111",
+                  display: "block", width: "22px", height: "1px", background: "#fff",
                   transition: "transform 0.3s, opacity 0.3s",
-                  transform: menuOpen
-                    ? i === 0 ? "rotate(45deg) translate(5px, 5px)"
-                    : i === 2 ? "rotate(-45deg) translate(5px, -5px)"
-                    : "none"
-                    : "none",
+                  transform: menuOpen ? i === 0 ? "rotate(45deg) translate(4px,4px)" : i === 2 ? "rotate(-45deg) translate(4px,-4px)" : "none" : "none",
                   opacity: menuOpen && i === 1 ? 0 : 1,
                 }} />
               ))}
@@ -302,19 +275,15 @@ export default function Portfolio() {
           )}
         </div>
 
-        {/* Mobile menu desplegable */}
         {isMobile && menuOpen && (
-          <div style={{
-            background: "#111", borderTop: "1px solid #222",
-            display: "flex", flexDirection: "column",
-          }}>
+          <div style={{ background: "#000", borderTop: "1px solid #111" }}>
             {NAV_ITEMS.map(item => (
               <button key={item.id} onClick={() => scrollTo(item.id)} style={{
-                background: "none", border: "none", cursor: "pointer",
-                padding: "1rem 1.25rem", textAlign: "left",
-                fontSize: "13px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
-                color: active === item.id ? "#E63312" : "#fff",
-                borderBottom: "1px solid #222",
+                display: "block", width: "100%", background: "none", border: "none",
+                cursor: "pointer", padding: "1rem 1.25rem", textAlign: "left",
+                ...T, fontStyle: "italic", fontSize: "11px", letterSpacing: "0.2em", textTransform: "uppercase",
+                color: active === item.id ? "#fff" : "#444",
+                borderBottom: "1px solid #111",
               }}>
                 {item.label}
               </button>
@@ -323,154 +292,128 @@ export default function Portfolio() {
         )}
       </nav>
 
-      {/* ── HERO ── */}
+      {/* HERO */}
       <section id="inicio" style={{
-        minHeight: "100vh", background: "#111", color: "#F5F2ED",
-        position: "relative", overflow: "hidden",
-        display: "flex", flexDirection: "column", justifyContent: "flex-end",
-        padding: "0 0 4rem",
+        minHeight: "100vh", background: "#000",
+        display: "flex", flexDirection: "column", justifyContent: "center",
+        padding: isMobile ? "100px 1.25rem 5rem" : "0 4rem",
+        position: "relative",
       }}>
-        {/* Decorativos — ocultos en móvil */}
-        {!isMobile && <>
-          <Geo type="circle" style={{ position: "absolute", top: "10%", right: "8%", width: "320px", height: "320px", color: "#E63312", opacity: 0.15 }} />
-          <Geo type="circle" style={{ position: "absolute", top: "12%", right: "9.5%", width: "260px", height: "260px", color: "#F5F2ED", opacity: 0.06 }} />
-          <Geo type="square" style={{ position: "absolute", bottom: "15%", right: "20%", width: "180px", height: "180px", background: "#E63312", opacity: 0.12 }} />
-          <Geo type="square" style={{ position: "absolute", top: "20%", left: "5%", width: "60px", height: "60px", background: "#E63312" }} />
-          <div style={{ position: "absolute", top: "8%", right: "6%", width: "140px", height: "140px", animation: "spin 18s linear infinite", opacity: 0.5 }}>
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} style={{ position: "absolute", top: "50%", left: "50%", width: "60px", height: "1px", background: "#E63312", transformOrigin: "0 0", transform: `rotate(${i * 30}deg)` }} />
-            ))}
-          </div>
-        </>}
+        {!isMobile && (
+          <div style={{ position: "absolute", top: 0, bottom: 0, right: "4rem", width: "1px", background: "#0d0d0d" }} />
+        )}
 
-        <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad, width: "100%", paddingTop: "100px" }}>
+        <div style={{ maxWidth: "1400px", margin: "0 auto", width: "100%" }}>
           <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.1s forwards" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "2rem" }}>
-              <Geo type="dot" style={{ width: "8px", height: "8px", color: "#E63312", flexShrink: 0 }} />
-              <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#E63312" }}>
-                Portfolio & CV — {new Date().getFullYear()}
-              </span>
-            </div>
+            <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.35em", color: "#777777", marginBottom: "2.5rem", textTransform: "uppercase" }}>
+              Portfolio & CV — {new Date().getFullYear()}
+              <span style={{ animation: "blink 1.2s step-end infinite", marginLeft: "6px" }}>_</span>
+            </p>
           </div>
 
-          <div style={{ opacity: 0, animation: "fadeUp 0.9s ease 0.2s forwards" }}>
-            <h1 style={{
-              fontFamily: "'Anton', sans-serif",
-              fontSize: "clamp(3rem, 12vw, 11rem)",
-              lineHeight: 0.9, letterSpacing: "-0.02em",
-              color: "#F5F2ED", marginBottom: "2.5rem",
-            }}>
-              {nombrePartes.map((p, i) => (
-                <span key={i} style={{ display: "block", color: i === nombrePartes.length - 1 ? "#E63312" : "#F5F2ED" }}>
-                  {p}
-                </span>
-              ))}
-            </h1>
-          </div>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr auto", gap: isMobile ? "2.5rem" : "4rem", alignItems: "flex-end" }}>
+            <div>
+              <div style={{ opacity: 0, animation: "fadeUp 0.9s ease 0.2s forwards" }}>
+                <h1 style={{
+                  ...T, fontWeight: 900, fontStyle: "italic",
+                  fontSize: "clamp(3.5rem, 13vw, 12rem)",
+                  lineHeight: 0.87, letterSpacing: "-0.03em",
+                  textTransform: "uppercase", color: "#fff", marginBottom: "2rem",
+                }}>
+                  {CV_DATA.nombre.split(" ").map((p, i) => (
+                    <span key={i} style={{ display: "block" }}>{p}</span>
+                  ))}
+                </h1>
+              </div>
 
-          {/* Foto + info en móvil: columna; en desktop: grid */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: isMobile ? "2rem" : "4rem",
-            alignItems: "flex-end",
-          }}>
-            <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.4s forwards" }}>
-              <div style={{ width: "48px", height: "2px", background: "#E63312", marginBottom: "1.25rem" }} />
-              <p style={{ fontSize: isMobile ? "0.95rem" : "1.1rem", color: "#F5F2ED", fontWeight: 300, lineHeight: 1.6 }}>
-                {CV_DATA.titulo}
-              </p>
-              <p style={{ fontSize: "12px", color: "#ffffff66", marginTop: "0.6rem", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-                {CV_DATA.ubicacion}
-              </p>
-              <div style={{ display: "flex", gap: "12px", marginTop: "1.75rem", flexWrap: "wrap" }}>
+              <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.4s forwards" }}>
+                <div style={{ height: "1px", background: "#1a1a1a", marginBottom: "1.25rem", maxWidth: "520px" }} />
+                <p style={{ ...T, fontStyle: "italic", fontSize: isMobile ? "1rem" : "1.2rem", color: "#666", lineHeight: 1.5, maxWidth: "520px", textTransform: "uppercase", letterSpacing: "0.04em" }}>
+                  {CV_DATA.titulo}
+                </p>
+                <p style={{ ...T, fontStyle: "italic", fontSize: "10px", color: "#777777", marginTop: "0.6rem", letterSpacing: "0.2em", textTransform: "uppercase" }}>
+                  {CV_DATA.ubicacion}
+                </p>
+              </div>
+
+              <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.55s forwards", display: "flex", gap: "1rem", marginTop: "2.5rem", flexWrap: "wrap" }}>
                 <button onClick={() => scrollTo("proyectos")} style={{
-                  background: "#E63312", color: "#fff", border: "none",
-                  padding: "12px 24px", fontSize: "11px", fontWeight: 700,
-                  letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
+                  background: "#fff", color: "#000", border: "none",
+                  padding: "12px 28px", cursor: "pointer",
+                  ...T, fontStyle: "italic", fontWeight: 700,
+                  fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase",
                   transition: "background 0.2s",
                 }}
-                  onMouseEnter={e => e.target.style.background = "#c4280e"}
-                  onMouseLeave={e => e.target.style.background = "#E63312"}
+                  onMouseEnter={e => { e.target.style.background = "#ccc"; }}
+                  onMouseLeave={e => { e.target.style.background = "#fff"; }}
                 >
                   Ver proyectos
                 </button>
                 <button onClick={() => scrollTo("contacto")} style={{
-                  background: "transparent", color: "#F5F2ED", border: "1px solid #F5F2ED44",
-                  padding: "12px 24px", fontSize: "11px", fontWeight: 700,
-                  letterSpacing: "0.12em", textTransform: "uppercase", cursor: "pointer",
-                  transition: "border-color 0.2s",
+                  background: "transparent", color: "#444", border: "1px solid #222",
+                  padding: "12px 28px", cursor: "pointer",
+                  ...T, fontStyle: "italic",
+                  fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase",
+                  transition: "border-color 0.2s, color 0.2s",
                 }}
-                  onMouseEnter={e => e.target.style.borderColor = "#F5F2ED"}
-                  onMouseLeave={e => e.target.style.borderColor = "#F5F2ED44"}
+                  onMouseEnter={e => { e.target.style.borderColor = "#fff"; e.target.style.color = "#fff"; }}
+                  onMouseLeave={e => { e.target.style.borderColor = "#222"; e.target.style.color = "#444"; }}
                 >
                   Contactar
                 </button>
               </div>
             </div>
 
-            <div style={{
-              opacity: 0, animation: "fadeUp 0.7s ease 0.55s forwards",
-              display: "flex", justifyContent: isMobile ? "center" : "flex-end",
-            }}>
+            <div style={{ opacity: 0, animation: "fadeUp 0.7s ease 0.5s forwards", display: "flex", justifyContent: isMobile ? "flex-start" : "flex-end" }}>
               <img src={foto} alt="Iván Rubio" style={{
-                width: isMobile ? "200px" : "280px",
-                height: isMobile ? "200px" : "280px",
-                objectFit: "cover", objectPosition: "center",
-                filter: "grayscale(100%)",
+                width: isMobile ? "160px" : "260px",
+                height: isMobile ? "200px" : "320px",
+                objectFit: "cover", objectPosition: "center top",
+                filter: "grayscale(100%) contrast(1.1)",
               }} />
             </div>
           </div>
         </div>
-
-        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "1px", background: "#ffffff11" }} />
       </section>
 
-      {/* ── MARQUEE ── */}
-      <div style={{ background: "#E63312", overflow: "hidden", padding: "12px 0" }}>
-        <div style={{ display: "flex", animation: "marquee 18s linear infinite", whiteSpace: "nowrap" }}>
+      {/* MARQUEE */}
+      <div style={{ borderTop: "1px solid #7F011F", borderBottom: "1px solid #7F011F", overflow: "hidden", padding: "13px 0" }}>
+        <div style={{ display: "flex", animation: "marquee 22s linear infinite", whiteSpace: "nowrap" }}>
           {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i} style={{ fontFamily: "'Anton', sans-serif", fontSize: "0.8rem", color: "#fff", letterSpacing: "0.2em", marginRight: "3rem", textTransform: "uppercase" }}>
+            <span key={i} style={{ ...T, fontStyle: "italic", fontSize: "0.75rem", color: "#7F011F", letterSpacing: "0.25em", marginRight: "4rem", textTransform: "uppercase" }}>
               {CV_DATA.titulo} ◆ {CV_DATA.ubicacion} ◆ Disponible ◆
             </span>
           ))}
         </div>
       </div>
 
-      {/* ── SOBRE MÍ ── */}
-      <section id="sobre-mi" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#F5F2ED" }}>
+      {/* SOBRE MÍ */}
+      <section id="sobre-mi" style={{ padding: secPad }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 2fr",
-            gap: isMobile ? "3rem" : "6rem",
-            alignItems: "start",
-          }}>
+          <div style={{ height: "1px", background: "#111", marginBottom: "3rem" }} />
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 2fr", gap: isMobile ? "3rem" : "8rem", alignItems: "start" }}>
             <Reveal direction={isMobile ? "up" : "left"}>
-              <div>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", textTransform: "uppercase", color: "#E63312", marginBottom: "1rem" }}>02 — Sobre mí</p>
-                <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1, letterSpacing: "-0.01em", marginBottom: "2rem" }}>
-                  QUIÉN<br />SOY
-                </h2>
-                <Geo type="square" style={{ width: "48px", height: "48px", background: "#E63312", marginBottom: "2rem" }} />
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  {CV_DATA.idiomas.map(l => (
-                    <div key={l.idioma} style={{ borderLeft: "2px solid #E63312", paddingLeft: "12px" }}>
-                      <p style={{ fontSize: "12px", fontWeight: 700, letterSpacing: "0.05em" }}>{l.idioma}</p>
-                      <p style={{ fontSize: "11px", color: "#666" }}>{l.nivel}</p>
-                    </div>
-                  ))}
-                </div>
+              <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.3em", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>02 — Sobre mí</p>
+              <h2 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(2.5rem, 6vw, 5.5rem)", lineHeight: 0.88, textTransform: "uppercase", letterSpacing: "-0.02em", marginBottom: "2.5rem" }}>
+                QUIÉN<br />SOY
+              </h2>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {CV_DATA.idiomas.map(l => (
+                  <div key={l.idioma} style={{ borderLeft: "1px solid #1f1f1f", paddingLeft: "12px" }}>
+                    <p style={{ ...T, fontWeight: 700, fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>{l.idioma}</p>
+                    <p style={{ ...T, fontStyle: "italic", fontSize: "11px", color: "#555" }}>{l.nivel}</p>
+                  </div>
+                ))}
               </div>
             </Reveal>
             <div>
               <Reveal direction={isMobile ? "up" : "right"}>
-                <p style={{ fontSize: isMobile ? "1rem" : "1.15rem", lineHeight: 1.9, color: "#333", fontWeight: 300, marginBottom: "2.5rem" }}>
+                <p style={{ ...T, fontWeight: 700, fontStyle: "italic", fontSize: isMobile ? "1.3rem" : "1.9rem", lineHeight: 1.3, textTransform: "uppercase", letterSpacing: "0.02em", color: "#ccc", marginBottom: "3rem" }}>
                   {CV_DATA.sobreMi}
                 </p>
               </Reveal>
-              <Reveal direction="up" delay={0.15}>
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "0", borderTop: "1px solid #ddd" }}>
+              <Reveal delay={0.15}>
+                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", borderTop: "1px solid #111" }}>
                   {[
                     { label: "Email", value: CV_DATA.email, href: `mailto:${CV_DATA.email}` },
                     { label: "Teléfono", value: CV_DATA.telefono, href: `tel:${CV_DATA.telefono}` },
@@ -478,14 +421,14 @@ export default function Portfolio() {
                     { label: "GitHub", value: "Ver repos ↗", href: CV_DATA.github },
                   ].map(({ label, value, href }) => (
                     <a key={label} href={href} target="_blank" rel="noreferrer" style={{
-                      display: "block", padding: "1.25rem 0", borderBottom: "1px solid #ddd",
-                      textDecoration: "none", transition: "padding-left 0.2s",
+                      display: "block", padding: "1.25rem 0", borderBottom: "1px solid #111",
+                      transition: "padding-left 0.2s",
                     }}
                       onMouseEnter={e => { e.currentTarget.style.paddingLeft = "8px"; }}
                       onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; }}
                     >
-                      <p style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#999", marginBottom: "4px" }}>{label}</p>
-                      <p style={{ fontSize: "13px", fontWeight: 700, color: "#111", wordBreak: "break-all" }}>{value}</p>
+                      <p style={{ ...T, fontStyle: "italic", fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "#444", marginBottom: "4px" }}>{label}</p>
+                      <p style={{ ...T, fontWeight: 700, fontSize: "13px", color: "#fff", wordBreak: "break-all" }}>{value}</p>
                     </a>
                   ))}
                 </div>
@@ -495,37 +438,41 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ── EXPERIENCIA ── */}
-      <section id="experiencia" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#111", color: "#F5F2ED" }}>
+      {/* EXPERIENCIA */}
+      <section id="experiencia" style={{ padding: secPad }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
+          <div style={{ height: "1px", background: "#111", marginBottom: "3rem" }} />
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #333", paddingBottom: "2rem", flexWrap: "wrap" }}>
-              <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase" }}>03 — Experiencia</p>
-              <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>TRAYECTORIA</h2>
-            </div>
+            <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.3em", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>03 — Experiencia</p>
+            <h2 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(2.5rem, 8vw, 8rem)", lineHeight: 0.87, textTransform: "uppercase", letterSpacing: "-0.02em", marginBottom: "4rem" }}>
+              TRAYECTORIA
+            </h2>
           </Reveal>
           {CV_DATA.experiencia.map((exp, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "60px 180px 1fr",
-                gap: isMobile ? "0.75rem" : "2rem",
-                padding: "2rem 0", borderBottom: "1px solid #222",
+                gridTemplateColumns: isMobile ? "1fr" : "140px 1fr",
+                gap: isMobile ? "1rem" : "4rem",
+                padding: "2.5rem 0", borderBottom: "1px solid #111",
               }}>
-                <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.5rem", color: "#E63312", lineHeight: 1 }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
                 <div>
-                  <p style={{ fontSize: "10px", color: "#666", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "4px" }}>
-                    {exp.fechaInicio} — {exp.fechaFin}
+                  <p style={{ ...T, fontStyle: "italic", fontSize: "9px", letterSpacing: "0.15em", color: "#444", textTransform: "uppercase", lineHeight: 1.8 }}>
+                    {exp.fechaInicio}<br />{exp.fechaFin}
                   </p>
-                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#E63312", letterSpacing: "0.04em" }}>{exp.empresa}</p>
+                  <p style={{ ...T, fontWeight: 700, fontSize: "11px", color: "#fff", marginTop: "8px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    {exp.empresa}
+                  </p>
                 </div>
                 <div>
-                  <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "0.02em" }}>{exp.puesto}</h3>
-                  <p style={{ fontSize: "14px", color: "#888", lineHeight: 1.8, marginBottom: "1.25rem", fontWeight: 300 }}>{exp.descripcion}</p>
+                  <h3 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(1.4rem, 3vw, 2.5rem)", textTransform: "uppercase", letterSpacing: "-0.01em", lineHeight: 1, marginBottom: "1rem" }}>
+                    {exp.puesto}
+                  </h3>
+                  <p style={{ ...T, fontStyle: "italic", fontSize: "1rem", color: "#555", lineHeight: 1.8, marginBottom: "1.5rem" }}>
+                    {exp.descripcion}
+                  </p>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {exp.tecnologias.map(t => <Tag key={t} inverted>{t}</Tag>)}
+                    {exp.tecnologias.map(t => <Tag key={t}>{t}</Tag>)}
                   </div>
                 </div>
               </div>
@@ -534,98 +481,93 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ── PROYECTOS ── */}
-      <section id="proyectos" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#F5F2ED" }}>
+      {/* PROYECTOS */}
+      <section id="proyectos" style={{ padding: secPad }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
+          <div style={{ height: "1px", background: "#111", marginBottom: "3rem" }} />
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #ddd", paddingBottom: "2rem", flexWrap: "wrap" }}>
-              <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase" }}>04 — Proyectos</p>
-              <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>TRABAJO</h2>
-            </div>
+            <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.3em", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>04 — Proyectos</p>
+            <h2 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(2.5rem, 8vw, 8rem)", lineHeight: 0.87, textTransform: "uppercase", letterSpacing: "-0.02em", marginBottom: "4rem" }}>
+              TRABAJO
+            </h2>
           </Reveal>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
-            gap: isMobile ? "1rem" : "0",
-          }}>
-            {CV_DATA.proyectos.map((p, i) => {
-              const isFirst = i === 0;
-              return (
-                <Reveal key={i} delay={i * 0.1} direction="up">
-                  <div style={{
-                    padding: "2rem",
-                    background: isFirst ? "#111" : "#F5F2ED",
-                    color: isFirst ? "#F5F2ED" : "#111",
-                    border: "1px solid", borderColor: isFirst ? "#111" : "#ddd",
-                    minHeight: isMobile ? "auto" : "320px",
-                    display: "flex", flexDirection: "column",
-                    transition: "transform 0.25s",
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-6px)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = "none"; }}
-                  >
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1.5rem" }}>
-                      <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "2.5rem", color: "#E63312", lineHeight: 1 }}>
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            {CV_DATA.proyectos.map((p, i) => (
+              <Reveal key={i} delay={i * 0.08}>
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: isMobile ? "1fr" : "80px 1fr",
+                  gap: isMobile ? "1rem" : "3rem",
+                  padding: "2.5rem 0", borderBottom: "1px solid #7F011F",
+                  alignItems: "start", transition: "background 0.2s", cursor: "default",
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.background = "#080808"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <span style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "2rem", color: "#1a1a1a", lineHeight: 1 }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+                      <h3 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(1.5rem, 4vw, 3rem)", textTransform: "uppercase", letterSpacing: "-0.02em", lineHeight: 1 }}>
+                        {p.nombre}
+                      </h3>
                       {p.destacado && (
-                        <span style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", background: "#E63312", color: "#fff", padding: "4px 10px" }}>
+                        <span style={{ ...T, fontStyle: "italic", fontSize: "9px", letterSpacing: "0.2em", color: "#7F011F", textTransform: "uppercase", border: "1px solid #7F011F", padding: "2px 8px" }}>
                           Destacado
                         </span>
                       )}
                     </div>
-                    <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "0.75rem", flex: 1 }}>{p.nombre}</h3>
-                    <p style={{ fontSize: "13px", lineHeight: 1.75, color: isFirst ? "#aaa" : "#555", marginBottom: "1.25rem", fontWeight: 300 }}>{p.descripcion}</p>
+                    <p style={{ ...T, fontStyle: "italic", fontSize: "1rem", color: "#555", lineHeight: 1.75, marginBottom: "1rem" }}>
+                      {p.descripcion}
+                    </p>
                     <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                      {p.tecnologias.map(t => <Tag key={t} inverted={isFirst}>{t}</Tag>)}
+                      {p.tecnologias.map(t => <Tag key={t}>{t}</Tag>)}
                     </div>
                   </div>
-                </Reveal>
-              );
-            })}
+                </div>
+              </Reveal>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── HABILIDADES ── */}
-      <section id="habilidades" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#E63312", color: "#fff" }}>
+      {/* HABILIDADES */}
+      <section id="habilidades" style={{ padding: secPad }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
+          <div style={{ height: "1px", background: "#111", marginBottom: "3rem" }} />
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #ffffff33", paddingBottom: "2rem", flexWrap: "wrap" }}>
-              <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#ffffff99", textTransform: "uppercase" }}>05 — Habilidades</p>
-              <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>SKILLS</h2>
-            </div>
+            <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.3em", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>05 — Habilidades</p>
+            <h2 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(2.5rem, 8vw, 8rem)", lineHeight: 0.87, textTransform: "uppercase", letterSpacing: "-0.02em", marginBottom: "4rem" }}>
+              SKILLS
+            </h2>
           </Reveal>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: isMobile ? "3rem" : "6rem",
-          }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "3rem" : "8rem" }}>
             <div>
               <Reveal>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2rem", color: "#ffffff99" }}>Técnicas</p>
+                <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.25em", color: "#333", textTransform: "uppercase", marginBottom: "2rem" }}>— Técnicas</p>
               </Reveal>
               {CV_DATA.habilidades.tecnicas.map((h, i) => (
-                <SkillBar key={h.nombre} nombre={h.nombre} nivel={h.nivel} delay={i * 0.08} index={i} />
+                <SkillBar key={h.nombre} nombre={h.nombre} nivel={h.nivel} delay={i * 0.08} />
               ))}
             </div>
             <div>
               <Reveal delay={0.1}>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "2rem", color: "#ffffff99" }}>Blandas</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0", marginBottom: "3rem" }}>
+                <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.25em", color: "#333", textTransform: "uppercase", marginBottom: "2rem" }}>— Blandas</p>
+                <div style={{ marginBottom: "3.5rem" }}>
                   {CV_DATA.habilidades.blandas.map((h, i) => (
-                    <div key={i} style={{ padding: "1rem 0", borderBottom: "1px solid #ffffff33", display: "flex", alignItems: "center", gap: "16px", fontSize: "14px", fontWeight: 400 }}>
-                      <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.2rem", color: "#fff", opacity: 0.3 }}>{String(i + 1).padStart(2, "0")}</span>
-                      {h}
+                    <div key={i} style={{ padding: "1.1rem 0", borderBottom: "1px solid #111", display: "flex", alignItems: "center", gap: "1.5rem" }}>
+                      <span style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "1.8rem", color: "#111", lineHeight: 1 }}>{String(i + 1).padStart(2, "0")}</span>
+                      <span style={{ ...T, fontWeight: 700, fontStyle: "italic", fontSize: "1rem", textTransform: "uppercase", letterSpacing: "0.08em" }}>{h}</span>
                     </div>
                   ))}
                 </div>
               </Reveal>
               <Reveal delay={0.2}>
-                <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.25em", textTransform: "uppercase", marginBottom: "1.5rem", color: "#ffffff99" }}>Intereses</p>
+                <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.25em", color: "#333", textTransform: "uppercase", marginBottom: "1.5rem" }}>— Intereses</p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                   {CV_DATA.intereses.map((int, i) => (
-                    <span key={i} style={{ padding: "6px 16px", fontSize: "11px", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", border: "1px solid #ffffff66", color: "#fff" }}>
+                    <span key={i} style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.15em", textTransform: "uppercase", border: "1px solid #1a1a1a", color: "#444", padding: "5px 14px" }}>
                       {int}
                     </span>
                   ))}
@@ -636,34 +578,38 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ── EDUCACIÓN ── */}
-      <section id="educacion" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#F5F2ED" }}>
+      {/* EDUCACIÓN */}
+      <section id="educacion" style={{ padding: secPad }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
+          <div style={{ height: "1px", background: "#111", marginBottom: "3rem" }} />
           <Reveal>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "1.5rem", marginBottom: "4rem", borderBottom: "1px solid #ddd", paddingBottom: "2rem", flexWrap: "wrap" }}>
-              <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase" }}>06 — Educación</p>
-              <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(2rem, 4vw, 3.5rem)", letterSpacing: "-0.01em" }}>FORMACIÓN</h2>
-            </div>
+            <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.3em", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>06 — Educación</p>
+            <h2 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(2.5rem, 8vw, 8rem)", lineHeight: 0.87, textTransform: "uppercase", letterSpacing: "-0.02em", marginBottom: "4rem" }}>
+              FORMACIÓN
+            </h2>
           </Reveal>
           {CV_DATA.educacion.map((edu, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div style={{
                 display: "grid",
-                gridTemplateColumns: isMobile ? "1fr" : "60px 180px 1fr",
-                gap: isMobile ? "0.75rem" : "2rem",
-                padding: "2rem 0", borderBottom: "1px solid #ddd",
+                gridTemplateColumns: isMobile ? "1fr" : "140px 1fr",
+                gap: isMobile ? "0.75rem" : "4rem",
+                padding: "2.5rem 0", borderBottom: "1px solid #111",
               }}>
-                <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "1.5rem", color: "#E63312", lineHeight: 1 }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <p style={{ fontSize: "10px", color: "#999", letterSpacing: "0.08em", textTransform: "uppercase", paddingTop: "4px" }}>
-                  {edu.fechaInicio} — {edu.fechaFin}
+                <p style={{ ...T, fontStyle: "italic", fontSize: "9px", letterSpacing: "0.15em", color: "#444", textTransform: "uppercase", lineHeight: 1.8 }}>
+                  {edu.fechaInicio}<br />{edu.fechaFin}
                 </p>
                 <div>
-                  <h3 style={{ fontSize: "1.1rem", fontWeight: 700, marginBottom: "4px" }}>{edu.titulo}</h3>
-                  <p style={{ fontSize: "13px", fontWeight: 700, color: "#E63312", marginBottom: "0.5rem" }}>{edu.centro}</p>
+                  <h3 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(1.3rem, 3vw, 2.2rem)", textTransform: "uppercase", letterSpacing: "-0.01em", lineHeight: 1, marginBottom: "0.5rem" }}>
+                    {edu.titulo}
+                  </h3>
+                  <p style={{ ...T, fontStyle: "italic", fontSize: "12px", color: "#444", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                    {edu.centro}
+                  </p>
                   {edu.descripcion && (
-                    <p style={{ fontSize: "13px", color: "#666", lineHeight: 1.8, fontWeight: 300 }}>{edu.descripcion}</p>
+                    <p style={{ ...T, fontStyle: "italic", fontSize: "0.95rem", color: "#555", lineHeight: 1.8 }}>
+                      {edu.descripcion}
+                    </p>
                   )}
                 </div>
               </div>
@@ -672,27 +618,24 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ── CONTACTO ── */}
-      <section id="contacto" style={{ padding: isMobile ? "4rem 0" : "7rem 0", background: "#111", color: "#F5F2ED" }}>
+      {/* CONTACTO */}
+      <section id="contacto" style={{ padding: secPad }}>
         <div style={{ maxWidth: "1400px", margin: "0 auto", padding: pad }}>
+          <div style={{ height: "1px", background: "#111", marginBottom: "3rem" }} />
           <Reveal>
-            <p style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.3em", color: "#E63312", textTransform: "uppercase", marginBottom: "1rem" }}>07 — Contacto</p>
-            <h2 style={{ fontFamily: "'Anton', sans-serif", fontSize: "clamp(3rem, 8vw, 8rem)", lineHeight: 0.9, letterSpacing: "-0.02em", marginBottom: "3rem" }}>
-              HABLEMOS<span style={{ color: "#E63312" }}>.</span>
+            <p style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.3em", color: "#444", textTransform: "uppercase", marginBottom: "1rem" }}>07 — Contacto</p>
+            <h2 style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "clamp(3rem, 12vw, 12rem)", lineHeight: 0.87, textTransform: "uppercase", letterSpacing: "-0.03em", marginBottom: "4rem" }}>
+              HABLEMOS.
             </h2>
           </Reveal>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-            gap: isMobile ? "2.5rem" : "6rem",
-          }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: isMobile ? "2.5rem" : "8rem" }}>
             <Reveal direction={isMobile ? "up" : "left"}>
-              <p style={{ fontSize: "1rem", color: "#888", lineHeight: 1.9, fontWeight: 300 }}>
+              <p style={{ ...T, fontStyle: "italic", fontSize: isMobile ? "1rem" : "1.3rem", color: "#555", lineHeight: 1.8, textTransform: "uppercase", letterSpacing: "0.02em" }}>
                 ¿Tienes una propuesta, proyecto o simplemente quieres hablar? Estoy abierto a nuevas oportunidades.
               </p>
             </Reveal>
             <Reveal direction={isMobile ? "up" : "right"}>
-              <div style={{ display: "flex", flexDirection: "column" }}>
+              <div>
                 {[
                   { label: "Email", value: CV_DATA.email, href: `mailto:${CV_DATA.email}` },
                   { label: "Teléfono", value: CV_DATA.telefono, href: `tel:${CV_DATA.telefono}` },
@@ -701,16 +644,14 @@ export default function Portfolio() {
                 ].map(({ label, value, href }) => (
                   <a key={label} href={href} target="_blank" rel="noreferrer" style={{
                     display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "1.25rem 0", borderBottom: "1px solid #222",
-                    textDecoration: "none", color: "#F5F2ED",
-                    transition: "padding-left 0.25s, color 0.25s",
-                    gap: "1rem",
+                    padding: "1.25rem 0", borderBottom: "1px solid #111",
+                    gap: "1rem", transition: "padding-left 0.2s",
                   }}
-                    onMouseEnter={e => { e.currentTarget.style.paddingLeft = "12px"; e.currentTarget.style.color = "#E63312"; }}
-                    onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; e.currentTarget.style.color = "#F5F2ED"; }}
+                    onMouseEnter={e => { e.currentTarget.style.paddingLeft = "10px"; }}
+                    onMouseLeave={e => { e.currentTarget.style.paddingLeft = "0"; }}
                   >
-                    <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "#555", flexShrink: 0 }}>{label}</span>
-                    <span style={{ fontSize: "12px", fontWeight: 700, wordBreak: "break-all", textAlign: "right" }}>{value} →</span>
+                    <span style={{ ...T, fontStyle: "italic", fontSize: "9px", letterSpacing: "0.25em", textTransform: "uppercase", color: "#444", flexShrink: 0 }}>{label}</span>
+                    <span style={{ ...T, fontWeight: 700, fontSize: "12px", color: "#fff", wordBreak: "break-all", textAlign: "right" }}>{value} →</span>
                   </a>
                 ))}
               </div>
@@ -719,16 +660,12 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer style={{
-        background: "#E63312", padding: "1.25rem 1.5rem",
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        flexWrap: "wrap", gap: "0.5rem",
-      }}>
-        <span style={{ fontFamily: "'Anton', sans-serif", fontSize: "0.9rem", color: "#fff", letterSpacing: "0.1em" }}>
-          IVÁN RUBIO MURILLO
+      {/* FOOTER */}
+      <footer style={{ borderTop: "1px solid #111", padding: "1.5rem 4rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+        <span style={{ ...T, fontWeight: 900, fontStyle: "italic", fontSize: "0.95rem", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+          Iván Rubio Murillo
         </span>
-        <span style={{ fontSize: "10px", fontWeight: 700, letterSpacing: "0.1em", color: "#ffffff99", textTransform: "uppercase" }}>
+        <span style={{ ...T, fontStyle: "italic", fontSize: "10px", letterSpacing: "0.15em", color: "#333", textTransform: "uppercase" }}>
           © {new Date().getFullYear()} — Todos los derechos reservados
         </span>
       </footer>
