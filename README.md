@@ -13,8 +13,6 @@ Bienvenido a mi portfolio. Aquí encontrarás los proyectos en los que he estado
 
 ## 🛠️ Tecnologías y Herramientas
 
-*(Agrupa aquí las tecnologías que dominas)*
-
 - **Frontend:** Dart, Flutter
 - **Backend:** Java, Python, Android Studio, HTML, CSS, JavaScript, TypeScript
 - **Bases de Datos:** MySql, Oracle, SqlDeveloper
